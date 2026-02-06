@@ -1,4 +1,4 @@
-Report and code for an analysis of a simple forward rate. See "ASimpleForwardRateReport.pdf" for an overview of the findings and the methods used in the code.
+Report and code for an analysis of a simple forward rate. See "ASimpleForwardRate.pdf" for an overview of the findings and the methods used in the code.
 
 The python code report_normality_test_1.py performs standard statistical tests, showing the daily changes in the forward rate are incompatible with a normal or log normal distribution, assuming constant volatility. 
 
