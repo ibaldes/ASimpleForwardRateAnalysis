@@ -20,10 +20,6 @@ plt.rcParams.update({'font.size': 12})
 
 keras.utils.set_random_seed(1700)
 
-###### Careful: runtimewarning and performancewarning disabled here - for cleaner output ########
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.simplefilter(action='ignore', category=PerformanceWarning)
-
 
 ####### days to lag and to look into the future
 
@@ -263,6 +259,7 @@ plt.clf()
 
 ##### make some lag and future features we will use at the end for plotting 
 
+'''
 lag_periods = list(range(1, n_lags + 1))
 for lag in lag_periods:
 	mlsfr[f'Vol Lag {lag}'] = mlsfr['volatility (%)'].shift(lag)
@@ -270,6 +267,15 @@ for lag in lag_periods:
 future_periods = list(range(1, n_future+1))
 for fut in future_periods:
 	mlsfr[f'Vol Fut {fut}'] = mlsfr['volatility (%)'].shift(-fut)
+'''
+	
+### instead of using loop, make new columns in a dictionary, and concat once to avoid df fragmentation and performance drop #####	
+new_cols_lag = {f'Vol Lag {lag}': mlsfr['volatility (%)'].shift(lag) for lag in range(1, n_lags + 1)}
+mlsfr = pd.concat([mlsfr, pd.DataFrame(new_cols_lag, index=mlsfr.index)], axis=1)	
+
+new_cols_fut = {f'Vol Fut {fut}': mlsfr['volatility (%)'].shift(-fut) for fut in range(1, n_future + 1)}
+mlsfr = pd.concat([mlsfr, pd.DataFrame(new_cols_fut, index=mlsfr.index)], axis=1)
+
 
 #######
 
@@ -280,8 +286,13 @@ observed_df['volatility (%)'] = mlsfr['volatility (%)']
 
 future_periods = list(range(1, n_future+1))
 
+'''
 for fut in future_periods:
 	observed_df[f'Vol Fut {fut}'] = mlsfr[f'Vol Fut {fut}']
+'''
+
+### instead of using loop, can use the same dictionary as above #####
+observed_df = pd.concat([observed_df, pd.DataFrame(new_cols_fut, index=observed_df.index)], axis=1)
 
 
 ############################################################################
@@ -289,8 +300,8 @@ for fut in future_periods:
 # Make dataframe of the volatility - will use this to create y later as well.
 #X = mlsfr.loc[:, 'volatility (%)']
 
-X = mlsfr[['volatility (%)']]
-X['EWMA volatility (%)'] = mlsfr['EWMA volatility (%)']
+X = mlsfr[['volatility (%)']].copy()
+X['EWMA volatility (%)'] = mlsfr['EWMA volatility (%)'].copy()
 
 
 ###### SPLIT INTO TRAIN VALIDATION AND TEST DATASETS WITH  60/20/20 INITIAL PROPORTION ##############################

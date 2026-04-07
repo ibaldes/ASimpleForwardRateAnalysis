@@ -14,7 +14,7 @@ from arch import arch_model
 
 plt.rcParams.update({'font.size': 12})
 
-###### Careful: runtimewarning disabled here - seems to be harmless issue in viupdatefunc and objectivefunc ########
+###### Careful: runtimewarning disabled here - seems to be harmless issue in viupdatefunc and objectivefunc when using scipy minimize, overflow in scalar multiply and invalid log value  ########
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 

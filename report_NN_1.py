@@ -22,10 +22,6 @@ plt.rcParams.update({'font.size': 12})
 
 keras.utils.set_random_seed(1700)
 
-###### Careful: runtimewarning and performancewarning disabled here - for cleaner output ########
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.simplefilter(action='ignore', category=PerformanceWarning)
-
 
 ####### days to lag and to look into the future
 
@@ -248,15 +244,25 @@ mlsfr['EWMA volatility (%)'] = sfrchange['EWMA_sigma_0.99']
 n_lags = 63
 n_future = 63
 
-
+'''
 lag_periods = list(range(1, n_lags + 1))
 for lag in lag_periods:
 	mlsfr[f'Vol Lag {lag}'] = mlsfr['volatility (%)'].shift(lag)
+'''
+	
+### instead of using loop, make new columns in a dictionary, and concat once to avoid df fragmentation and performance drop #####	
+new_cols_lag = {f'Vol Lag {lag}': mlsfr['volatility (%)'].shift(lag) for lag in range(1, n_lags + 1)}
+mlsfr = pd.concat([mlsfr, pd.DataFrame(new_cols_lag, index=mlsfr.index)], axis=1)	
 
+'''
 future_periods = list(range(1, n_future+1))
 for fut in future_periods:
 	mlsfr[f'Vol Fut {fut}'] = mlsfr['volatility (%)'].shift(-fut)
+'''
 
+### instead of using loop, make new columns in a dictionary, and concat once to avoid df fragmentation and performance drop #####
+new_cols_fut = {f'Vol Fut {fut}': mlsfr['volatility (%)'].shift(-fut) for fut in range(1, n_future + 1)}
+mlsfr = pd.concat([mlsfr, pd.DataFrame(new_cols_fut, index=mlsfr.index)], axis=1)
 
 #print(mlsfr)
 

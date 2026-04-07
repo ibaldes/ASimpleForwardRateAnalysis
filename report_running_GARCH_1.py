@@ -216,9 +216,9 @@ def RunningGarch(t):
 	q0 = [0.01,0.01,0.9]
 
 	cons = [{'type':'ineq', 'fun': lambda q: q - 0.0001},
-		{'type':'ineq', 'fun': lambda q: 0.999 - q[1] - q[2] }]
+		{'type':'ineq', 'fun': lambda q: 0.9999 - q[1] - q[2] }]
 
-	res2 = minimize(objectivefunc2, q0, method='SLSQP', constraints=cons, bounds=None, tol=1e-6)
+	res2 = minimize(objectivefunc2, q0, method='SLSQP', constraints=cons, bounds=None, tol=1e-10)
 
 	omegafit = res2.x[0]
 	alphafit = res2.x[1]
