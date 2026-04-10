@@ -310,9 +310,9 @@ X_train_and_validation, X_test = train_test_split(X, test_size=0.2, shuffle=Fals
 
 X_train, X_validation = train_test_split(X_train_and_validation, test_size=0.25, shuffle=False)
 
-#################################### BUFFER TO AVOID POSSIBLE LEAKAGE ########################################################
-###### Remove some n_future and n_lags rows appropriately to create buffer between the training, validation, and test datasets. 
-
+#################################### BUFFER TO AVOID POSSIBLE LEAKAGE ######################################################################################
+###### (Remove some n_future and n_lags rows appropriately to create buffer between the training, validation, and test datasets) ###########################
+###### This is still effectively done, but below when creating the lag and future horizon features when getting X_train, X_validation, and X_test, into the correct shape for the LSTM #######
 
 print('Length of X_train is:', len(X_train))
 
